@@ -27,7 +27,7 @@ SIZE := $(PREFIX)size
 ifeq ($(DEBUG),yes)
 	CFLAGS += -Og -g -gdwarf-2 -DDEBUG
 else
-	CFLAGS += -O3
+	CFLAGS += -Os
 endif
 
 
