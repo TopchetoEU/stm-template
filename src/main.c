@@ -7,7 +7,11 @@
 
 void setup() {
 	init_printing(NULL /* Replace with a uart handle */);
-	bsn_loggerInit(HAL_GetTick, true);
+	#ifdef DEBUG
+		bsn_loggerInit(HAL_GetTick, true);
+	#else
+		bsn_loggerInit(HAL_GetTick, false);
+	#endif
 	logI("Hello, world!");
 }
 
