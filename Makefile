@@ -4,7 +4,6 @@ ST_DIR := stfiles
 
 include ./conf.mk
 
-
 # Paths in stfiles/Makefile are relative to stfiles. We need to make them relative to us (prefix $(ST_DIR))
 FIX_RELATIVE = $(foreach FILE,$1,$(if $(filter /%,$(FILE)),$(FILE),$(ST_DIR)/$(FILE)))
 FIX_INC = $(foreach FILE,$1,$(if $(filter -I/%,$(FILE)),$(FILE),$(FILE:-I%=-I$(ST_DIR)/%)))
@@ -55,6 +54,12 @@ all: $(BIN_DIR)/$(TARGET).hex $(BIN_DIR)/$(TARGET).bin
 clean:
 	@rm -rf $(BIN_DIR)/
 
+requirements:
+	@echo sed
+	@echo $(CC)
+	@echo $(OBJCP)
+	@echo $(SIZE)
+
 $(BIN_DIR)/$(TARGET).hex: $(BIN_DIR)/$(TARGET).elf | $(BIN_DIR)/
 	@echo HEX -o $@
 	@$(OBJCP) -O ihex $^ $@
@@ -69,11 +74,11 @@ $(BIN_DIR)/$(TARGET).elf: $(OBJECTS) | Makefile $(ST_MKFILE) $(BIN_DIR)/
 .SECONDEXPANSION:
 $(BIN_DIR)/%.o: %.c | $(HEADERS) Makefile $(ST_MKFILE) $$(dir $$@)
 	@echo CC $^
-	@$(CC) -c $(CFLAGS) -o $@ $^
+	@$(CC) -x c -c $(CFLAGS) -o $@ $^
 .SECONDEXPANSION:
 $(BIN_DIR)/root/%.o: /%.c | $(HEADERS) Makefile $(ST_MKFILE) $$(dir $(BIN_DIR)/root/%)
 	@echo CC $^
-	@$(CC) -c $(CFLAGS) -o $@ $^
+	@$(CC) -x c -c $(CFLAGS) -o $@ $^
 
 .SECONDEXPANSION:
 $(BIN_DIR)/%.o: %.s | $(HEADERS) Makefile $(ST_MKFILE) $$(dir $$@)

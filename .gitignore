@@ -2,14 +2,16 @@
 
 !/stfiles
 /stfiles/*
+!/stfiles/scripts
 !/stfiles/.gitkeep
-!/stfiles/*.ioc
-!/stfiles/Makefile
-!/stfiles/startup_*.s
-!/stfiles/*_FLASH.ld
+# !/stfiles/*.ioc
+# !/stfiles/Makefile
+# !/stfiles/startup_*.s
+# !/stfiles/*_FLASH.ld
 
 !/src
 !/inc
+!/scripts
 !/Makefile
 !/conf.mk
 !/README.md
