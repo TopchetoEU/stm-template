@@ -1,0 +1,16 @@
+/*
+
+!/stfiles
+/stfiles/*
+!/stfiles/.gitkeep
+!/stfiles/*.ioc
+!/stfiles/Makefile
+!/stfiles/startup_*.s
+!/stfiles/*_FLASH.ld
+
+!/src
+!/inc
+!/Makefile
+!/conf.mk
+!/README.md
+!.gitignore
