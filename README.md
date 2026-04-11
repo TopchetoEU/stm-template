@@ -58,6 +58,17 @@ Now, all .c and .h files from there will be included in the build process. By co
 
 Pro tip: use the clangd extension, and generate a `compile_commands.json` file, using `bear -- make -B`. The experience is leaps and bounds better than microsoft's server.
 
+# Integrating in an existing project
+
+This is applicable only for existing CubeMX/CubeIDE projects with an established code base.
+
+- Add this repo as an origin to your project (`git remote add template this-repo-url`)
+- Merge whichever branch you prefer into your project (`git merge template/main --allow-unrelated-histories` or `git merge template/with-boson --allow-unrelated-histories`)
+- Copy your .ioc file into `stfiles`
+- Follow the above steps
+- Move all user files from `Core/Src` into `src` and `Core/Inc` into `inc` (important: do not copy CubeMX-generated files)
+- Copy all user code from `main.c` whereever it belongs (init code in main() goes in setup(), loop code goes in loop(), private and local variables go in the main.c file, above all functions). User code in `Error_Handler` should go in the `_error` function in `syscall.c` instead.
+
 # Requirements
 
 For now, this works only on linux, so if you're on windows, use WSL.
