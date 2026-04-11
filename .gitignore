@@ -11,12 +11,9 @@
 
 !/src
 !/inc
-
 !/dep
-/dep/*
-!/dep/*/
-
 !/Makefile
 !/conf.mk
 !/README.md
 !/.gitignore
+!/.gitmodules
