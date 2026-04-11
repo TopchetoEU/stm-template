@@ -11,7 +11,11 @@
 
 !/src
 !/inc
-!/scripts
+
+!/dep
+/dep/*
+!/dep/*/
+
 !/Makefile
 !/conf.mk
 !/README.md
