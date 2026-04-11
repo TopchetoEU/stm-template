@@ -48,6 +48,12 @@ INC_DIRS += dep/my-dep/inc
 
 Now, all .c and .h files from there will be included in the build process. By convention, dependencies are added to a `dep` folder, using git's submodules.
 
+# Debugging in VSCode
+
+1. Install the "Cortex Debug" extension
+2. In your `launch.json` file, add a "Cortex Debug" preset
+3. After the default preset has appeared, edit `executable` to point to the actual .elf file and set `servertype` to stlink
+
 # Requirements
 
 For now, this works only on linux, so if you're on windows, use WSL.
