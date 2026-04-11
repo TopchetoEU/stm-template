@@ -22,7 +22,8 @@ Setting up the actual project:
 5. Click "Generate code"
 6. For some reason, CubeMX generates a linker script for an older toolchain. Go to the .ld file in `stfiles` and remove all occurences of `(READONLY)`
 	TODO: Is this correct?
-7. Go into stfiles/Makefile and comment out everything, except the lines between `C_SOURCES = ` and `PREFIX = `, `CPU = ` and `C_INCLUDES = `. In result, you should be left with a Makefile that declares these variables:
+7. Go into stfiles/Makefile and comment out everything, except the lines between `C_SOURCES = ` and `PREFIX = `, between `CPU = ` and `C_INCLUDES = `, and the single lines `LDSCRIPT =` and `TARGET = `. In result, you should be left with a Makefile that declares these variables:
+	- TARGET
 	- C_SOURCES
 	- ASM_SOURCES
 	- ASMM_SOURCES
@@ -32,6 +33,7 @@ Setting up the actual project:
 	- C_DEFS
 	- AS_INCLUDES
 	- C_INCLUDES
+	- LDSCRIPT
 
 # Setting up the main project
 

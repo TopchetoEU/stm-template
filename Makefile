@@ -39,8 +39,6 @@ SOURCES_C += $(call FIX_RELATIVE,$(C_SOURCES))
 SOURCES_ASM += $(call RECURSE,$(SRC_DIRS),*.s)
 SOURCES_ASM += $(call FIX_RELATIVE,$(ASM_SOURCES))
 
-LDSCRIPT := $(wildcard stfiles/*.ld)
-
 OBJECTS += $(subst //,/root/,$(SOURCES_C:%.c=$(BIN_DIR)/%.o))
 OBJECTS += $(subst //,/root/,$(SOURCES_ASM:%.s=$(BIN_DIR)/%.o))
 
@@ -48,7 +46,7 @@ CFLAGS += $(INC_DIRS:%="-I%")
 CFLAGS += $(MCU) $(C_DEFS) $(call FIX_INC,$(C_INCLUDES)) -Wall -Wextra -fdata-sections -ffunction-sections
 
 LDFLAGS += -lc -lm -lnosys
-LDFLAGS += $(MCU) -specs=nano.specs -T$(LDSCRIPT) -Wl,-Map=$(BIN_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS += $(MCU) -specs=nano.specs -T$(ST_DIR)/$(LDSCRIPT) -Wl,-Map=$(BIN_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 all: $(BIN_DIR)/$(TARGET).hex $(BIN_DIR)/$(TARGET).bin
 clean:
