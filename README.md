@@ -54,6 +54,8 @@ Now, all .c and .h files from there will be included in the build process. By co
 2. In your `launch.json` file, add a "Cortex Debug" preset
 3. After the default preset has appeared, edit `executable` to point to the actual .elf file and set `servertype` to stlink
 
+Pro tip: use the clangd extension, and generate a `compile_commands.json` file, using `bear -- make -B`. The experience is leaps and bounds better than microsoft's server.
+
 # Requirements
 
 For now, this works only on linux, so if you're on windows, use WSL.

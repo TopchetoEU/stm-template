@@ -1,4 +1,7 @@
+#include <stdbool.h>
+#include <stdio.h>
 #include <errno.h>
+
 #include <stm32g0xx_hal.h>
 #include <sys/reent.h>
 
@@ -6,6 +9,11 @@ static UART_HandleTypeDef *_uart = NULL;
 
 void init_printing(UART_HandleTypeDef *uart) {
 	_uart = uart;
+}
+
+void _error() {
+	printf("FATAL ERROR!!\n");
+	while (true);
 }
 
 int _read(int file, char *ptr, int len) {
