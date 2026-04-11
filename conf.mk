@@ -8,8 +8,8 @@ SRC_DIRS += src
 INC_DIRS += inc
 
 # Put any dependencies here
-SRC_DIRS +=
-INC_DIRS +=
+SRC_DIRS += dep/boson/src
+INC_DIRS += dep/boson/inc
 
 # Put any custom flags here
 CFLAGS +=
