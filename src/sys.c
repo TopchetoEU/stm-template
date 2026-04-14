@@ -7,9 +7,36 @@
 
 static UART_HandleTypeDef *_uart = NULL;
 
+static size_t _crit_n = 0;
+
+static void crit_begin() {
+	if (!_crit_n) {
+		__disable_irq();
+	}
+	_crit_n++;
+}
+static void crit_end() {
+	if (_crit_n > 0) {
+		_crit_n--;
+	}
+	if (!_crit_n) {
+		__enable_irq();
+	}
+}
+
 void init_sys(UART_HandleTypeDef *uart) {
 	_uart = uart;
+
+	bsn_critInit(crit_begin, crit_end);
+
+	#ifdef DEBUG
+		bsn_loggerInit((bsn_tickFunc)HAL_GetTick, true);
+	#else
+		bsn_loggerInit((bsn_tickFunc)HAL_GetTick, false);
+	#endif
 }
+
+
 
 void _error() {
 	printf("FATAL ERROR!!\n");

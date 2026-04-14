@@ -3,15 +3,10 @@
 
 #include "bosonLogger.h"
 
-#include "syscalls.h"
+#include "sys.h"
 
 void setup() {
 	init_sys(NULL /* Replace with a uart handle */);
-	#ifdef DEBUG
-		bsn_loggerInit(HAL_GetTick, true);
-	#else
-		bsn_loggerInit(HAL_GetTick, false);
-	#endif
 	logI("Hello, world!");
 }
 
