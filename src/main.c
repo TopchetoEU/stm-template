@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stm32g0xx_hal.h>
 
-#include "syscalls.h"
+#include "sys.h"
 
 void setup() {
 	init_sys(NULL /* Replace with a uart handle */);
