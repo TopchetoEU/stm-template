@@ -4,7 +4,7 @@
 #include "syscalls.h"
 
 void setup() {
-	init_printing(NULL /* Replace with a uart handle */);
+	init_sys(NULL /* Replace with a uart handle */);
 	printf("Hello, world!\n");
 }
 

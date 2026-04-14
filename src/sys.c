@@ -7,7 +7,7 @@
 
 static UART_HandleTypeDef *_uart = NULL;
 
-void init_printing(UART_HandleTypeDef *uart) {
+void init_sys(UART_HandleTypeDef *uart) {
 	_uart = uart;
 }
 
