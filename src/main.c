@@ -6,7 +6,7 @@
 #include "syscalls.h"
 
 void setup() {
-	init_printing(NULL /* Replace with a uart handle */);
+	init_sys(NULL /* Replace with a uart handle */);
 	#ifdef DEBUG
 		bsn_loggerInit(HAL_GetTick, true);
 	#else
