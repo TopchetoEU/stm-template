@@ -52,11 +52,43 @@ Now, all .c and .h files from there will be included in the build process. By co
 
 # Debugging in VSCode
 
-1. Install the "Cortex Debug" extension
-2. In your `launch.json` file, add a "Cortex Debug" preset
-3. After the default preset has appeared, edit `executable` to point to the actual .elf file and set `servertype` to stlink
+1. Install the "STM32Cube Debug STLink GDB Server" extension (it will install all extensions it needs)
+2. In your `launch.json` file, add a "STM32Cube" preset
+3. After the default preset has appeared, edit the following fields:
+	- `imageFileName` - `bin/whateverYourProjectIsNamed.efi`
+	- `deviceName` - the name of your MCU (for example, STM32G0B1KBU6)
+	- `deviceCore` - the type of ARM core in your MCU (for example, Cortex-M0+). You can check this in `stfiles/Makefile` (`CPU = ...`)
+4. Add a `tasks.json` file, which contains the following task, and make sure to reference it in your `launch.json` preset:
 
-Pro tip: use the clangd extension, and generate a `compile_commands.json` file, using `bear -- make -B`. The experience is leaps and bounds better than microsoft's server.
+```json
+{
+	"label": "Build",
+	"type": "shell",
+	"command": "make",
+	"args": ["DEBUG=yes"],
+	"options": {
+		"cwd": "${workspaceFolder}"
+	},
+	"problemMatcher": ["$gcc"],
+	"group": {
+		"kind": "build",
+		"isDefault": true
+	},
+	"presentation": {
+		"echo": true,
+		"reveal": "always",
+		"focus": false,
+		"panel": "shared",
+		"showReuseMessage": true,
+		"clear": false
+	},
+	"runOptions": {
+		"runOn": "default"
+	},
+}
+```
+
+Pro tip: use the clangd extension, and generate a `compile_commands.json` file, using `bear -- make -B`. The experience is leaps and bounds better than microsoft's server. If you go this route, you still need the C/C++ extension for debugging, so leave it in, but disable its intellisense with `"C_Cpp.intelliSenseEngine": "disabled"` in your user `settings.json`.
 
 # Integrating in an existing project
 
