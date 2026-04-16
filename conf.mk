@@ -13,3 +13,9 @@ INC_DIRS +=
 
 # Put any custom flags here
 CFLAGS +=
+
+ifeq ($(DEBUG),yes)
+	BIN_DIR := bin/debug
+else
+	BIN_DIR := bin/release
+endif

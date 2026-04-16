@@ -6,8 +6,8 @@ include ./conf.mk
 
 # Paths in stfiles/Makefile are relative to stfiles. We need to make them relative to us (prefix $(ST_DIR))
 FIX_RELATIVE = $(foreach FILE,$1,$(if $(filter /%,$(FILE)),$(FILE),$(ST_DIR)/$(FILE)))
-FIX_INC = $(foreach FILE,$1,$(if $(filter -I/%,$(FILE)),$(FILE),$(FILE:-I%=-I$(ST_DIR)/%)))
-RECURSE = $(foreach FILE,$(wildcard $(1:%=%/*)),$(call RECURSE,$(FILE),$2) $(filter $(subst *,%,$2),$(FILE)))
+FIX_INC = $(foreach FLAG,$1,$(FLAG:-I%=%))
+RECURSE = $(foreach FILE,$(wildcard $(1:%=%/*)),$(call RECURSE,$(FILE),$2) $(filter $2,$(FILE)))
 
 .SUFFIXES:
 .SECONDARY:
@@ -30,20 +30,19 @@ else
 	CFLAGS += -Os
 endif
 
+INC_DIRS += $(call FIX_RELATIVE,$(call FIX_INC,$(C_INCLUDES)))
 
-HEADERS += $(call RECURSE,$(INC_DIRS),*.h)
-
-SOURCES_C += $(call RECURSE,$(SRC_DIRS),*.c)
+SOURCES_C += $(call RECURSE,$(SRC_DIRS),%.c)
 SOURCES_C += $(call FIX_RELATIVE,$(C_SOURCES))
 
-SOURCES_ASM += $(call RECURSE,$(SRC_DIRS),*.s)
+SOURCES_ASM += $(call RECURSE,$(SRC_DIRS),%.s)
 SOURCES_ASM += $(call FIX_RELATIVE,$(ASM_SOURCES))
 
-OBJECTS += $(subst //,/root/,$(SOURCES_C:%.c=$(BIN_DIR)/%.o))
-OBJECTS += $(subst //,/root/,$(SOURCES_ASM:%.s=$(BIN_DIR)/%.o))
+OBJECTS += $(foreach SRC,$(SOURCES_C),$(BIN_DIR)/$(if $(filter /%,$(SRC)),$(SRC:/%.c=abs/%.o),$(SRC:%.c=rel/%.o)))
+OBJECTS += $(foreach SRC,$(SOURCES_ASM),$(BIN_DIR)/$(if $(filter /%,$(SRC)),$(SRC:/%.s=abs/%.o),$(SRC:%.s=rel/%.o)))
 
 CFLAGS += $(INC_DIRS:%="-I%")
-CFLAGS += $(MCU) $(C_DEFS) $(call FIX_INC,$(C_INCLUDES)) -Wall -Wextra -fdata-sections -ffunction-sections
+CFLAGS += $(MCU) $(C_DEFS) -MMD -MP -Wall -Wextra -fdata-sections -ffunction-sections
 
 LDFLAGS += -lc -lm -lnosys
 LDFLAGS += $(MCU) -specs=nano.specs -T$(ST_DIR)/$(LDSCRIPT) -Wl,-Map=$(BIN_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
@@ -64,28 +63,30 @@ $(BIN_DIR)/$(TARGET).hex: $(BIN_DIR)/$(TARGET).elf | $(BIN_DIR)/
 $(BIN_DIR)/$(TARGET).bin: $(BIN_DIR)/$(TARGET).elf | $(BIN_DIR)/
 	@echo BIN -o $@
 	@$(OBJCP) -O binary -S $^ $@
-$(BIN_DIR)/$(TARGET).elf: $(OBJECTS) | Makefile $(ST_MKFILE) $(BIN_DIR)/
+$(BIN_DIR)/$(TARGET).elf: $(OBJECTS) Makefile $(ST_MKFILE) $(BIN_DIR)/
 	@echo CC -o $@
-	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	@$(CC) $(CFLAGS) -o $@ $(OBJECTS) $(LDFLAGS)
 	@$(SIZE) $@
 
 .SECONDEXPANSION:
-$(BIN_DIR)/%.o: %.c | $(HEADERS) Makefile $(ST_MKFILE) $$(dir $$@)
-	@echo CC $^
-	@$(CC) -x c -c $(CFLAGS) -o $@ $^
+$(BIN_DIR)/rel/%.o: %.c | Makefile conf.mk $(ST_MKFILE) $$(dir $$@)
+	@echo CC $<
+	@$(CC) -x c -c $(CFLAGS) -o $@ $<
 .SECONDEXPANSION:
-$(BIN_DIR)/root/%.o: /%.c | $(HEADERS) Makefile $(ST_MKFILE) $$(dir $(BIN_DIR)/root/%)
-	@echo CC $^
-	@$(CC) -x c -c $(CFLAGS) -o $@ $^
+$(BIN_DIR)/abs/%.o: /%.c | Makefile conf.mk $(ST_MKFILE) $$(dir $$@)
+	@echo CC $<
+	@$(CC) -x c -c $(CFLAGS) -o $@ $<
 
 .SECONDEXPANSION:
-$(BIN_DIR)/%.o: %.s | $(HEADERS) Makefile $(ST_MKFILE) $$(dir $$@)
-	@echo ASM $^
-	@$(ASM) -c $(CFLAGS) -o $@ $^
+$(BIN_DIR)/rel/%.o: %.s | Makefile conf.mk $(ST_MKFILE) $$(dir $$@)
+	@echo ASM $<
+	@$(ASM) -c $(CFLAGS) -o $@ $<
 .SECONDEXPANSION:
-$(BIN_DIR)/root/%.o: /%.s | $(HEADERS) Makefile $(ST_MKFILE) $$(dir $$@)
-	@echo ASM $^
-	@$(ASM) -c $(CFLAGS) -o $@ $^
+$(BIN_DIR)/abs/%.o: /%.s | Makefile conf.mk $(ST_MKFILE) $$(dir $$@)
+	@echo ASM $<
+	@$(ASM) -c $(CFLAGS) -o $@ $<
 
 %/:
 	@mkdir -p $@
+
+-include $(OBJECTS:.o=.d)
