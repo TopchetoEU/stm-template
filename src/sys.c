@@ -56,7 +56,7 @@ int _read(int file, char *ptr, int len) {
 		return -1;
 	}
 
-	return 0;
+	return len;
 }
 int _write(int file, char *ptr, int len) {
 	(void)file;
@@ -72,5 +72,5 @@ int _write(int file, char *ptr, int len) {
 		return -1;
 	}
 
-	return 0;
+	return len;
 }
