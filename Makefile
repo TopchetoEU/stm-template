@@ -2,6 +2,10 @@
 BIN_DIR := bin
 ST_DIR := stfiles
 
+ST_MKFILE := $(ST_DIR)/Makefile
+
+include $(ST_MKFILE)
+
 include ./conf.mk
 
 # Paths in stfiles/Makefile are relative to stfiles. We need to make them relative to us (prefix $(ST_DIR))
@@ -11,10 +15,6 @@ RECURSE = $(foreach FILE,$(wildcard $(1:%=%/*)),$(call RECURSE,$(FILE),$2) $(fil
 
 .SUFFIXES:
 .SECONDARY:
-
-ST_MKFILE := $(ST_DIR)/Makefile
-
-include $(ST_MKFILE)
 
 #### Toolchain
 CC := $(PREFIX)gcc
@@ -63,26 +63,26 @@ $(BIN_DIR)/$(TARGET).hex: $(BIN_DIR)/$(TARGET).elf | $(BIN_DIR)/
 $(BIN_DIR)/$(TARGET).bin: $(BIN_DIR)/$(TARGET).elf | $(BIN_DIR)/
 	@echo BIN -o $@
 	@$(OBJCP) -O binary -S $^ $@
-$(BIN_DIR)/$(TARGET).elf: $(OBJECTS) Makefile $(ST_MKFILE) $(BIN_DIR)/
+$(BIN_DIR)/$(TARGET).elf: $(OBJECTS) Makefile $(ST_MKFILE) | $(BIN_DIR)/
 	@echo CC -o $@
 	@$(CC) $(CFLAGS) -o $@ $(OBJECTS) $(LDFLAGS)
 	@$(SIZE) $@
 
 .SECONDEXPANSION:
-$(BIN_DIR)/rel/%.o: %.c | Makefile conf.mk $(ST_MKFILE) $$(dir $$@)
+$(BIN_DIR)/rel/%.o: %.c Makefile conf.mk $(ST_MKFILE) | $$(dir $$@)
 	@echo CC $<
 	@$(CC) -x c -c $(CFLAGS) -o $@ $<
 .SECONDEXPANSION:
-$(BIN_DIR)/abs/%.o: /%.c | Makefile conf.mk $(ST_MKFILE) $$(dir $$@)
+$(BIN_DIR)/abs/%.o: /%.c Makefile conf.mk $(ST_MKFILE) | $$(dir $$@)
 	@echo CC $<
 	@$(CC) -x c -c $(CFLAGS) -o $@ $<
 
 .SECONDEXPANSION:
-$(BIN_DIR)/rel/%.o: %.s | Makefile conf.mk $(ST_MKFILE) $$(dir $$@)
+$(BIN_DIR)/rel/%.o: %.s Makefile conf.mk $(ST_MKFILE) | $$(dir $$@)
 	@echo ASM $<
 	@$(ASM) -c $(CFLAGS) -o $@ $<
 .SECONDEXPANSION:
-$(BIN_DIR)/abs/%.o: /%.s | Makefile conf.mk $(ST_MKFILE) $$(dir $$@)
+$(BIN_DIR)/abs/%.o: /%.s Makefile conf.mk $(ST_MKFILE) | $$(dir $$@)
 	@echo ASM $<
 	@$(ASM) -c $(CFLAGS) -o $@ $<
 
