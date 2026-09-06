@@ -48,6 +48,7 @@ LDFLAGS += -lc -lm -lnosys
 LDFLAGS += $(MCU) -specs=nano.specs -T$(ST_DIR)/$(LDSCRIPT) -Wl,-Map=$(BIN_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 all: $(BIN_DIR)/$(TARGET).hex $(BIN_DIR)/$(TARGET).bin
+commands: $(OBJECTS:%=cmd_%)
 clean:
 	@rm -rf $(BIN_DIR)/
 
@@ -67,6 +68,16 @@ $(BIN_DIR)/$(TARGET).elf: $(OBJECTS) Makefile $(ST_MKFILE) | $(BIN_DIR)/
 	@echo CC -o $@
 	@$(CC) $(CFLAGS) -o $@ $(OBJECTS) $(LDFLAGS)
 	@$(SIZE) $@
+
+cmd_$(BIN_DIR)/rel/%.o: %.c
+	@echo $(CC) -x c -c $(CFLAGS) -o $@ $<
+cmd_$(BIN_DIR)/abs/%.o: /%.c
+	@echo $(CC) -x c -c $(CFLAGS) -o $@ $<
+
+cmd_$(BIN_DIR)/rel/%.o: %.s
+	@echo $(ASM) -c $(CFLAGS) -o $@ $<
+cmd_$(BIN_DIR)/abs/%.o: /%.s
+	@echo $(ASM) -c $(CFLAGS) -o $@ $<
 
 .SECONDEXPANSION:
 $(BIN_DIR)/rel/%.o: %.c Makefile conf.mk $(ST_MKFILE) | $$(dir $$@)
