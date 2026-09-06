@@ -1,0 +1,3 @@
+[submodule "dep/boson"]
+	path = dep/boson
+	url = https://github.com/Kinetik-automotive-ltd/boson
