@@ -50,6 +50,27 @@ INC_DIRS += dep/my-dep/inc
 
 Now, all .c and .h files from there will be included in the build process. By convention, dependencies are added to a `dep` folder, using git's submodules.
 
+# Debugging in CubeIDE
+
+You will need a somewhat recent version of CubeIDE for this (1.16 supports this workflow)
+
+1. Go to `File > New > Makefile project with existing code`
+2. Fill "Project Name" with a sensible name and set "Existing Code Location" to the root folder of this project (not `stfiles`)
+3. Set "Toolchain for Indexer Settings" to "MCU ARM GCC"
+4. Create the project
+5. Run `bear -- make` in the project directory, to get a `compile_flags.json`
+7. Go to `Project > Properties > C/C++ Build > Behavior` and:
+	1. Toggle "Use custom build arguments"
+	2. Set build arguments to `-j32 DEBUG=yes`
+	3. Set "Build (Incremental build)" to `all`
+6. Go to `Project > Properties > C/C++ General > Preprocessor Include Paths, Macros, etc. > Providers` and:
+	1. Enable "CDT GCC Build Output Parser"
+	2. Enable "Compilation Databse Parser"
+	3. Set "Compilation Database path" to the `compile_flags.json` file you just generated
+	4. Set build parser to "CDT GCC Build Output Parser"
+7. Right click on the project in the projects sidebar and in the context menu, click on `Index > Rebuild`
+
+
 # Debugging in VSCode
 
 1. Install the "STM32Cube Debug STLink GDB Server" extension (it will install all extensions it needs)
